@@ -79,7 +79,7 @@
 
 .home-post-image {
   width: 100%;
-  object-fit: fill;
+  object-fit: cover;
   border-radius: 8px;
   margin-bottom: 10px;
 }

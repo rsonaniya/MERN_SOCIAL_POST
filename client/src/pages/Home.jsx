@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import './Home.css';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import "./Home.css";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/getposts');
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/getposts`
+        );
         setPosts(response.data.posts);
         setLoading(false);
       } catch (err) {
-        setError('Error fetching posts.');
+        console.log(err);
+        setError("Error fetching posts.");
         setLoading(false);
       }
     };
@@ -25,11 +27,13 @@ const Home = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/deletepost/${id}`);
-      setPosts(posts.filter((post) => post._id !== id)); 
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/api/deletepost/${id}`
+      );
+      setPosts(posts.filter((post) => post._id !== id));
     } catch (err) {
-      console.error('Error deleting post:', err);
-      setError('Error deleting post.');
+      console.error("Error deleting post:", err);
+      setError("Error deleting post.");
     }
   };
 
@@ -55,14 +59,19 @@ const Home = () => {
                   {post.image && (
                     <Link to={`/post/${post._id}`}>
                       <img
-                        src={`http://localhost:5000${post.image}`}
+                        src={`${import.meta.env.VITE_API_BASE_URL}${
+                          post.image
+                        }`}
                         alt={post.title}
                         className="home-post-image"
                       />
                     </Link>
                   )}
                   <div className="home-post-actions">
-                    <Link to={`/edit-post/${post._id}`} className="home-edit-link">
+                    <Link
+                      to={`/edit-post/${post._id}`}
+                      className="home-edit-link"
+                    >
                       Edit
                     </Link>
                     <button

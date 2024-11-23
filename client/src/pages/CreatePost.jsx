@@ -1,31 +1,36 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import "./CreatePost.css"
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import axios from "axios";
+import "./CreatePost.css";
+import { useNavigate } from "react-router-dom";
 const CreatePost = () => {
-  const navigate = useNavigate()
-  const [title, setTitle] = useState('');
+  const navigate = useNavigate();
+  const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    if (image) formData.append('image', image);
+    formData.append("title", title);
+    formData.append("description", description);
+    if (image) formData.append("image", image);
 
+    setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/createpost', formData);
-      setTitle('');
-      setDescription('');
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/createpost`,
+        formData
+      );
+      setTitle("");
+      setDescription("");
       setImage(null);
-      alert('Post created successfully');
-      navigate("/")
-      
+      setLoading(false);
+      navigate("/");
     } catch (error) {
-      console.error('Error creating post:', error);
+      console.error("Error creating post:", error);
+      setLoading(false);
     }
   };
 
@@ -42,7 +47,12 @@ const CreatePost = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Title:</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
         </div>
         <div>
           <label>Image:</label>
@@ -50,9 +60,15 @@ const CreatePost = () => {
         </div>
         <div>
           <label>Description:</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          ></textarea>
         </div>
-        <button type="submit">Create Post</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating Post, Please Wait" : "Create Post"}
+        </button>
       </form>
     </div>
   );

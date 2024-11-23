@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import './PostDetail.css';
-
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import "./PostDetail.css";
 const PostDetail = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
@@ -12,17 +11,22 @@ const PostDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/getpost/${id}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/getpost/${id}`
+        );
         setPost(response.data.post);
         setLoading(false);
       } catch (err) {
-        setError('Error fetching post details.');
+        console.log(err);
+        setError("Error fetching post details.");
         setLoading(false);
       }
     };
 
     fetchPost();
   }, [id]);
+
+  const navigate = useNavigate();
 
   if (loading) return <p className="loading-text">Loading post...</p>;
   if (error) return <p className="error-text">{error}</p>;
@@ -35,7 +39,7 @@ const PostDetail = () => {
       {post.image && (
         <div className="post-image-container">
           <img
-            src={`http://localhost:5000${post.image}`}
+            src={`${import.meta.env.VITE_API_BASE_URL}${post.image}`}
             alt={post.title}
             className="post-image"
           />
@@ -45,10 +49,7 @@ const PostDetail = () => {
         <p className="post-description">{post.description}</p>
       </div>
       <div className="back-button-container">
-        <button
-          className="back-button"
-          onClick={() => window.history.back()}
-        >
+        <button className="back-button" onClick={() => navigate("/")}>
           Back to Posts List
         </button>
       </div>
