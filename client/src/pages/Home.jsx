@@ -52,7 +52,7 @@ const Home = () => {
 
         {!loading && !error && (
           <div className="home-posts-grid">
-            {posts.length > 0 ? (
+            {posts?.length > 0 ? (
               posts.map((post) => (
                 <div key={post._id} className="home-post-card">
                   <h6 className="home-title">{post.title}</h6>
